@@ -1,40 +1,33 @@
-# This file contains the Command Line Interface (CLI) for
-# the Tic-Tac-Toe game. This is where input and output happens.
-# For core game logic, see logic.py.
+# cli.py
+from logic import TicTacToe
 
-from logic import make_empty_board, get_winner, other_player
-
-def print_board(board):
-    for row in board:
-        print(" ".join([cell if cell else ' ' for cell in row]))
-    print("\n")
-
-if __name__ == '__main__':
-    board = make_empty_board()
-    winner = None
-    current_player = 'X'
-
-    while winner is None:
-        print(f"It's {current_player}'s turn.")
-        print_board(board)
-
-        # Input a move from the player
-        move = input("Enter your move (row and column, e.g., '1 2'): ")
-        row, col = map(int, move.split())
-
-        # Check if the cell is empty
-        if board[row - 1][col - 1] is None:
-            board[row - 1][col - 1] = current_player
-        else:
-            print("Invalid move. Cell is already occupied. Try again.")
+def main():
+    game = TicTacToe()
+    while True:
+        game.print_board()
+        try:
+            row = int(input(f"Player {game.get_current_player()}, enter your move row (0-2): "))
+            col = int(input(f"Player {game.get_current_player()}, enter your move column (0-2): "))
+        except ValueError:
+            print("Please enter a number between 0 and 2.")
             continue
 
-        # Check if someone won
-        winner = get_winner(board)
-        if winner:
-            print_board(board)
-            print(f"{winner} wins!")
+        if row not in range(3) or col not in range(3):
+            print("Invalid move. Please try again.")
+            continue
 
-        # Switch to the other player
-        current_player = other_player(current_player)
+        if not game.make_move(row, col):
+            print("This cell is already taken. Please try again.")
+            continue
 
+        if game.get_winner():
+            game.print_board()
+            print(f"Player {game.get_winner()} wins!")
+            break
+        elif game.is_draw():
+            game.print_board()
+            print("It's a draw!")
+            break
+
+if __name__ == '__main__':
+    main()

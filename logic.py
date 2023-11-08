@@ -1,29 +1,48 @@
-# This file is where game logic lives. No input
-# or output happens here. The logic in this file
-# should be unit-testable.
+# logic.py
+
+class TicTacToe:
+    def __init__(self):
+        self.board = [[' ' for _ in range(3)] for _ in range(3)]
+        self.current_player = 'X'
+        self.winner = None
+
+    def print_board(self):
+        for row in self.board:
+            print('|'.join(row))
+            print('-' * 5)
+
+    def switch_player(self):
+        self.current_player = 'O' if self.current_player == 'X' else 'X'
+
+    def make_move(self, row, col):
+        if self.board[row][col] == ' ':
+            self.board[row][col] = self.current_player
+            if self.check_winner(row, col):
+                self.winner = self.current_player
+            else:
+                self.switch_player()
+            return True
+        else:
+            return False
+
+    def check_winner(self, row, col):
+        # Check horizontal, vertical, and both diagonals
+        win = all(self.board[row][i] == self.current_player for i in range(3)) or \
+              all(self.board[i][col] == self.current_player for i in range(3)) or \
+              all(self.board[i][i] == self.current_player for i in range(3)) or \
+              all(self.board[i][2 - i] == self.current_player for i in range(3))
+        return win
+
+    def is_draw(self):
+        return all(self.board[row][col] != ' ' for row in range(3) for col in range(3)) and not self.winner
+
+    def get_current_player(self):
+        return self.current_player
+
+    def get_winner(self):
+        return self.winner
 
 
-def make_empty_board():
-    return [
-        [None, None, None],
-        [None, None, None],
-        [None, None, None],
-    ]
 
-def get_winner(board):
-    # Check rows, columns, and diagonals for a win
-    for i in range(3):
-        if board[i][0] == board[i][1] == board[i][2] and board[i][0] is not None:
-            return board[i][0]
-        if board[0][i] == board[1][i] == board[2][i] and board[0][i] is not None:
-            return board[0][i]
-    if board[0][0] == board[1][1] == board[2][2] and board[0][0] is not None:
-        return board[0][0]
-    if board[0][2] == board[1][1] == board[2][0] and board[0][2] is not None:
-        return board[0][2]
-    return None  # No winner yet
-
-def other_player(player):
-    return 'O' if player == 'X' else 'X'
 
 
