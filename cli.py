@@ -1,8 +1,12 @@
 # cli.py
-
-from logic import TicTacToe, HumanPlayer, ComputerPlayer
+import csv
+import os
+from datetime import datetime
+from logic import TicTacToe, HumanPlayer, ComputerPlayer, log_game_result, generate_winner_stats
 
 def main():
+    start_time = datetime.now()
+
     player_count = int(input("Enter the number of players (1 or 2): "))
     player1 = HumanPlayer('X')
     if player_count == 1:
@@ -20,7 +24,9 @@ def main():
             print("Invalid move. Please try again.")
             continue
 
-        # 检查游戏状态并打印结果
+        if is_single_player:
+            print("\n============\n")
+
         if game.get_winner():
             game.print_board()
             print(f"Congratulations! Player {game.get_winner()} wins!")
@@ -30,9 +36,9 @@ def main():
             print("It's a draw!")
             break
 
-        # 如果是单人游戏且电脑刚刚落子，打印分割线
-        if is_single_player and game.players[game.current_player].symbol == 'X':
-            print("\n============\n")  # 分割线
+    if game.get_winner() or game.is_draw():
+        log_game_result(game.get_winner(), player1, player2, start_time)
+        generate_winner_stats()
 
 if __name__ == '__main__':
     main()
