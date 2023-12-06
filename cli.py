@@ -1,12 +1,8 @@
 # cli.py
-import csv
-import os
-from datetime import datetime
-from logic import TicTacToe, HumanPlayer, ComputerPlayer, log_game_result, generate_winner_stats
+
+from logic import TicTacToe, HumanPlayer, ComputerPlayer, log_game_result, generate_winner_stats, analyze_best_starting_position
 
 def main():
-    start_time = datetime.now()
-
     player_count = int(input("Enter the number of players (1 or 2): "))
     player1 = HumanPlayer('X')
     if player_count == 1:
@@ -37,8 +33,11 @@ def main():
             break
 
     if game.get_winner() or game.is_draw():
-        log_game_result(game.get_winner(), player1, player2, start_time)
+        first_move_result = game.get_first_move_result()
+        log_game_result(is_single_player, player1.player_type, player2.player_type, game.get_winner(), first_move_result, game.first_move_position)
         generate_winner_stats()
+
+    analyze_best_starting_position()
 
 if __name__ == '__main__':
     main()
